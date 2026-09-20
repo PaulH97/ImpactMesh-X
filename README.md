@@ -38,10 +38,10 @@ done
 
 Each hazard (`Flood`, `Fire`) is a flat folder of per-patch files. Positive and hazard-free negative samples are mixed together, distinguished by the `pool` column in the metadata parquet. Every patch carries 16 timesteps per sensor across a ±180-day window around the event date. `S2L2A` ships three cloud-cover variants of the same reflectance (`clear`/`cloudy`/`realistic`) for robustness studies.
 
-| Hazard | Patches (total) | Positive | Negative | CEMS events | AOIs | Event dates |
-|---|---|---|---|---|---|---|
-| Flood | 9,723 | 4,410 | 5,313 | 191 | 523 | 2016 – 2026 |
-| Fire  | 10,168 | 4,801 | 5,367 | 215 | 384 | 2016 – 2026 |
+| Hazard | Patches (total) | Positive | Negative | CEMS events | Event dates |
+|---|---|---|---|---|---|
+| Flood | 9,723 | 4,410 | 5,313 | 191 | 2016 – 2026 |
+| Fire  | 10,168 | 4,801 | 5,367 | 215 | 2016 – 2026 |
 
 Official split (positive samples only, see `splits/`):
 
@@ -74,11 +74,10 @@ python example.py --root /path/to/ImpactMesh-X/Flood --task flood
 
 `dataset.py`, `datamodule.py`, `transforms.py`, `utils.py` are plain PyTorch/Lightning, no config framework. They return the full 16-timestep stack per modality, subsample downstream if you need fewer.
 
-`splits/` carries the official train/val/test split and per-band normalization stats used for every hazard-mapping result in the paper -- **positive samples only**. Negative samples have no predefined split, build your own if you need one.
+`splits/` carries the official train/val/test split (based on original ImpactMesh split) and per-band normalization stats used for every hazard-mapping result in the paper -- **positive samples only**. Negative samples have no predefined split, build your own if you need one.
 
 ```python
 import json
-
 from dataset import ImpactMeshDataset
 from datamodule import ImpactMeshDataModule
 from transforms import Compose, Normalize, RandomHorizontalFlip, RandomVerticalFlip
@@ -100,7 +99,7 @@ dm = ImpactMeshDataModule(
 )
 ```
 
-See `example.py` for a runnable CLI script (split, batch, saved sample plot), or `visualize_sample.ipynb` for the same flow interactively, plus an appendix on loading negative samples. Both are verified end-to-end against the released Flood and Fire data.
+See `example.py` for a runnable CLI script (split, batch, saved sample plot), or `visualize_sample.ipynb` for the same flow interactively.
 
 ## Reproducing the paper
 
