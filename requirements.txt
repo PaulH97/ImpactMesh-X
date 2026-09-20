@@ -1,0 +1,8 @@
+torch
+lightning
+numpy
+pandas
+pyarrow
+rasterio
+zarr
+matplotlib
