@@ -1,0 +1,17 @@
+_target_: lightning.pytorch.trainer.Trainer
+default_root_dir: ${hydra:runtime.output_dir}
+# Fixed budget per dataset -- there is no EarlyStopping any more, so every run of
+# a given dataset trains exactly this long and the cosine always completes.
+# Sen12Landslides is smaller/harder and gets 75 via dataset.max_epochs.
+max_epochs: ${oc.select:dataset.max_epochs,50}
+accelerator: gpu
+devices: 1
+precision: 16-mixed
+gradient_clip_val: 1.0
+gradient_clip_algorithm: norm
+accumulate_grad_batches: ${oc.select:dataset.accum_steps,1}
+log_every_n_steps: 25
+logger: ${logger}
+callbacks: ${callbacks}
+fast_dev_run: False
+deterministic: False

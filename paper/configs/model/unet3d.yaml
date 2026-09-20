@@ -1,0 +1,7 @@
+# configs/model/unet3d.yaml
+name: Unet3D
+instance:
+  _target_: fusion.models.unet3d.UNet3D
+  num_bands: ${single_modality_channels:${dataset.modality_infos}}
+  num_classes: ${dataset.num_classes}
+  feats: 16

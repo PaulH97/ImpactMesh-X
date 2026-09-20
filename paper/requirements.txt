@@ -1,0 +1,15 @@
+torch
+lightning
+hydra-core
+omegaconf
+numpy
+pandas
+pyarrow
+rasterio
+zarr
+xarray
+einops
+matplotlib
+torchmetrics
+segmentation-models-pytorch
+wandb

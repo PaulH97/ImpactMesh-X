@@ -1,0 +1,49 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "impactmesh-x-paper"
+version = "0.1.0"
+description = "Paper reproduction code for ImpactMesh-X: Hydra configs, training/prediction scripts, and model code for every result in the paper."
+requires-python = ">=3.10"
+dependencies = [
+    "torch",
+    "lightning",
+    "hydra-core",
+    "omegaconf",
+    "numpy",
+    "pandas",
+    "pyarrow",
+    "rasterio",
+    "zarr",
+    "xarray",
+    "einops",
+    "matplotlib",
+    "torchmetrics",
+    "segmentation-models-pytorch",
+    "wandb",
+]
+
+# `code/` is imported everywhere in this tree as `fusion` (see e.g.
+# `code/pipeline/train.py`'s `import fusion.resolvers` and every
+# `_target_: fusion....` in configs/), so it's mapped to that name here
+# rather than renamed -- that keeps this directory a drop-in match for the
+# internal repo the paper results were produced with.
+#
+# `packages.find` + `package-dir` is *not* enough here: setuptools' editable
+# (`pip install -e .`) build ignores the package-dir remap and imports the
+# packages under their on-disk name (`code`, not `fusion`) via a generated
+# path finder, so `import fusion...` still fails after a clean editable
+# install. Listing the subpackages explicitly avoids that discovery path
+# and works for both `pip install .` and `pip install -e .`.
+[tool.setuptools]
+packages = [
+    "fusion",
+    "fusion.data",
+    "fusion.models",
+    "fusion.pipeline",
+]
+
+[tool.setuptools.package-dir]
+fusion = "code"

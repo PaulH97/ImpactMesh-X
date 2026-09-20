@@ -1,0 +1,11 @@
+# configs/model/convlstm.yaml
+name: ConvLSTM
+instance:
+  _target_: fusion.models.convlstm.ConvLSTM
+  height: ${dataset.img_size}
+  width: ${dataset.img_size}
+  num_bands: ${single_modality_channels:${dataset.modality_infos}}
+  num_classes: ${dataset.num_classes}
+  hidden_dim: 64
+  kernel_size: 3
+  num_layers: 2

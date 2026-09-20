@@ -1,0 +1,19 @@
+# @package _global_
+# UTAE benchmark — small datasets (128×128, e.g. Sen12Landslides)
+
+defaults:
+  - override /model: utae
+
+exp_nr: 1
+exp_tag: benchmark
+
+datamodule:
+  batch_size: 16
+  num_workers: 8
+
+model:
+  instance:
+    fusion_stage: single
+
+trainer:
+  accumulate_grad_batches: 1   # effective bs = 16

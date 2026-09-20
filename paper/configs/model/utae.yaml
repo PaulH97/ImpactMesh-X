@@ -1,0 +1,21 @@
+# configs/model/utae.yaml
+name: U-TAE
+warmup_epochs: 5 # Warmup for the temporal attention encoder (see lit_module/default.yaml).
+instance:
+  _target_: fusion.models.utae.UTAE_MM
+  modality_infos: ${dataset.modality_infos}
+  num_classes: ${dataset.num_classes}
+  fusion_stage: mid
+  encoder_widths: [64, 64, 64, 128]
+  decoder_widths: [128, 64, 32, 32]
+  dem_enc_width: 32
+  str_conv_k: 4
+  str_conv_s: 2
+  str_conv_p: 1
+  agg_mode: att_group
+  encoder_norm: group
+  n_head: 16
+  d_model: 256
+  d_k: 4
+  padding_mode: reflect
+  temporal_pe: relative

@@ -1,0 +1,29 @@
+# configs/config.yaml
+defaults:
+  - _self_
+  - dataset: im_fire_s12
+  - datamodule: impactmesh
+  - model: utae
+  - lit_module: default
+  - trainer: cpu
+  - logger: wandb
+  - callbacks: default
+  - experiment: null
+
+run_id: 0
+exp_nr: 0
+root_dir: path/to/your/root_dir
+run_group: experiment${exp_nr}
+
+sanity_check: true
+effective_batch_size: 16
+seed: 42
+
+hydra:
+  run:
+    dir: ${root_dir}/outputs/paper/runs/${run_group}/run${run_id}_${dataset.name}_${model.name}_seed${seed}
+  sweep:
+    dir: ${root_dir}/outputs/paper/runs/${run_group}
+    subdir: run${run_id}_${dataset.name}_${model.name}_seed${seed}
+  job:
+    chdir: false

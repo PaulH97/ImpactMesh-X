@@ -1,0 +1,24 @@
+# @package _global_
+# UTAE auf der ImpactMesh-Originalserie: pre_month, pre_event, event_window,
+# post_event. Das ist die Sprosse zwischen bi-temporal und der vollen Serie und
+# zugleich genau das Datenprodukt, auf dem das ImpactMesh-Paper trainiert --
+# damit beantwortet die Leiter 1/2/4/16, ob SITS ueberhaupt etwas beitraegt.
+#
+# Auf ImpactMesh sind es die echten Originalaufnahmen (die vier Ankerdaten
+# stecken bei 99.8-100 % der Patches im 16er-Stack, S1 und S2-clear). Auf
+# Sen12Landslides gibt es keine Anker, dort waehlt select_timesteps nach
+# derselben Regel wie fuer single-post/bi-temporal, mit >= 30 Tagen Abstand fuer
+# die beiden aeusseren Frames.
+
+defaults:
+  - override /model: utae
+
+exp_nr: 2
+exp_tag: quad-temporal
+
+dataset:
+  temporal_mode: quad-temporal
+
+model:
+  instance:
+    fusion_stage: single

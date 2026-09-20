@@ -1,0 +1,35 @@
+# @package _global_
+# UTAE on the four ImpactMesh anchors plus four frames picked for temporal
+# coverage -- the rung between quad-temporal and the full series, so the ladder
+# reads 1 / 2 / 4 / 8 / 16.
+#
+# The four extra frames come from farthest-point sampling in `select_timesteps`
+# (see `_fill_spread`): seeded with the quad-temporal selection, each step takes
+# the frame furthest from everything already chosen. Two consequences that make
+# this rung comparable to the others:
+#
+#   1. Nested by construction. The quad frames are the seed, so 4 subset 8
+#      subset 16 holds and 4-vs-8 measures "more frames", not "other frames".
+#   2. Blind to the pre/post side of the event -- the distance is a magnitude,
+#      so a series whose event sits late is sampled where its frames are rather
+#      than forced to an even split. Measured over 60 test patches per hazard,
+#      the four additions land 50/50 pre/post, and the pre-share of the selected
+#      eight tracks the pre-share of the full sixteen (r = 0.83 fire,
+#      0.75 flood).
+#
+# This is also the first rung that covers the whole series instead of only the
+# event window: the worst-covered acquisition sits 131 d (fire) / 144 d (flood)
+# from its nearest selected frame under quad-temporal, and 25 d / 30 d here.
+
+defaults:
+  - override /model: utae
+
+exp_nr: 2
+exp_tag: octo-temporal
+
+dataset:
+  temporal_mode: octo-temporal
+
+model:
+  instance:
+    fusion_stage: single

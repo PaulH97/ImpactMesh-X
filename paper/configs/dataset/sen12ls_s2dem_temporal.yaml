@@ -1,0 +1,24 @@
+# configs/dataset/sen12ls_s2dem_temporal.yaml
+name: S12LS-S2DEM-temporal
+root: path/to/Sen12Landslides
+task: S12LS-LD
+version: harmonized
+img_size: 128
+num_classes: 2
+num_timesteps: 15
+temporal_mode: multi-temporal
+modality_infos:
+  S2: {channels: 10, img_size: 128, temporal: true}
+  DEM: {channels: 3, img_size: 128, temporal: false}
+splits_file: ${dataset.root}/tasks/${dataset.task}/temporal/splits_aligned.json
+norm_json: ${dataset.root}/tasks/${dataset.task}/temporal/norm_aligned.json
+
+
+# LR-Sweep experiment91 (val/mIoU, U-TAE, S1+S2, seeds 42/123, je 75 Epochen):
+# 1e-4 58.5/70.6, 3e-4 59.5/71.8, 1e-3 60.0/71.9, 3e-3 59.9/72.2.
+# Zwischen 1e-3 und 3e-3 laeuft die Kurve flach aus (Differenz kleiner als die
+# Seed-Spanne); 1e-3 gewinnt den Stichentscheid ueber best_ep -- bei 3e-3 lag das
+# S1-Optimum auf Epoche 66 und 74 von 75, also an der Budgetkante, was die
+# Epochenfrage wieder aufgemacht haette. Bei 1e-3 sitzt es auf 38-64.
+lr: 1e-3
+max_epochs: 75

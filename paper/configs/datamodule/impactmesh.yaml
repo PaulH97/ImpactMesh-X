@@ -1,0 +1,36 @@
+# configs/datamodule/impactmesh.yaml
+_target_: fusion.data.datamodule.ImpactMeshDataModule
+dataset_cfg: ${dataset}
+batch_size: 8
+num_workers: 8
+pin_memory: true
+train_transforms:
+  _target_: torchvision.transforms.Compose
+  transforms:
+    - _target_: fusion.data.transforms.RandomHorizontalFlip
+      p: 0.5
+    - _target_: fusion.data.transforms.RandomVerticalFlip
+      p: 0.5
+    - _target_: fusion.data.transforms.RandomRotate90
+      p: 0.5
+    - _target_: fusion.data.transforms.NormalizeImpactMesh
+      norm_json: ${dataset.norm_json}
+    - _target_: fusion.data.transforms.TerrainFeatures
+      features: ["dem", "slope", "aspect"]
+      smooth_sigma: 1.0
+val_transforms:
+  _target_: torchvision.transforms.Compose
+  transforms:
+    - _target_: fusion.data.transforms.NormalizeImpactMesh
+      norm_json: ${dataset.norm_json}
+    - _target_: fusion.data.transforms.TerrainFeatures
+      features: ["dem", "slope", "aspect"]
+      smooth_sigma: 1.0    
+test_transforms:
+  _target_: torchvision.transforms.Compose
+  transforms:
+    - _target_: fusion.data.transforms.NormalizeImpactMesh
+      norm_json: ${dataset.norm_json}
+    - _target_: fusion.data.transforms.TerrainFeatures
+      features: ["dem", "slope", "aspect"]
+      smooth_sigma: 1.0

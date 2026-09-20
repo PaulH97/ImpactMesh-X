@@ -1,0 +1,19 @@
+# @package _global_
+# UTAE benchmark — large datasets (256×256, ImpactMesh-Fire/Flood)
+
+defaults:
+  - override /model: utae
+
+exp_nr: 1
+exp_tag: benchmark
+
+datamodule:
+  batch_size: 8
+  num_workers: 8
+
+model:
+  instance:
+    fusion_stage: single
+
+trainer:
+  accumulate_grad_batches: 2   # effective bs = 16

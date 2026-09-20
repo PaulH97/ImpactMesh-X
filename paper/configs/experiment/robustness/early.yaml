@@ -1,0 +1,24 @@
+# @package _global_
+# Experiment 4: Fusionsstufen unter atmosphaerischer Occlusion.
+# Early Fusion (Kanal-Concat vor dem ersten Conv).
+#
+# Die S2-Variante (clear | cloudy | realistic) kommt als `dataset.s2_version`-
+# Override aus all_runs.csv, nicht aus einer eigenen Dataset-Config. `clear`
+# ist eine Spalte dieses Experiments -- die Clear-Referenz jeder Zeile wird also
+# im selben Sweep mit identischer Config und identischen Seeds gerechnet, nicht
+# aus exp2/exp3 geliehen.
+#
+# Spiegelt configs/experiment/fusion/early.yaml: gleiches Modell, gleicher
+# temporal_mode (multi-temporal aus der Dataset-Config), kein
+# accumulate_grad_batches-Override -- gleicher effektiver Batch (8 auf
+# ImpactMesh) wie im Fusionsvergleich auf Sen12Landslides.
+
+defaults:
+  - override /model: utae
+
+exp_nr: 4
+exp_tag: robustness_early
+
+model:
+  instance:
+    fusion_stage: early

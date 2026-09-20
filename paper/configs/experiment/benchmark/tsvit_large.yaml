@@ -1,0 +1,21 @@
+# @package _global_
+# TSViT benchmark — large datasets (256×256, ImpactMesh-Fire/Flood)
+# patch_size=16 -> 16×16 = 256 spatial tokens (matched to TSViT small).
+
+defaults:
+  - override /model: tsvit
+
+exp_nr: 1
+exp_tag: benchmark
+
+model:
+  img_size: ${dataset.img_size}
+  max_seq_len: 16
+  patch_size: 16
+
+datamodule:
+  batch_size: 4
+  num_workers: 8
+
+trainer:
+  accumulate_grad_batches: 4   # effective bs = 16

@@ -1,0 +1,17 @@
+_target_: lightning.pytorch.loggers.wandb.WandbLogger
+offline: true
+id: run${run_id}_${dataset.name}_${model.name}_seed${seed}
+resume: allow
+project: "mm-sits-fusion-paper"
+name: run${run_id}_${dataset.name}_${model.name}_seed${seed}
+save_dir: ${hydra:runtime.output_dir}
+log_model: false
+group: ${exp_tag}_${dataset.name}_${model.name}
+tags:
+  - ${exp_tag}
+config:
+  run_id: ${run_id}
+  dataset: ${dataset.name}
+  model: ${model.name}
+  exp_tag: ${exp_tag}
+  seed: ${seed}

@@ -1,0 +1,47 @@
+_target_: fusion.pipeline.lit_module.LitSegmentation
+
+net: ${model.instance}
+num_classes: ${dataset.num_classes}
+
+loss:
+  _target_: fusion.pipeline.lit_module.DiceCELoss
+  dice_weight: 0.5
+  ce_weight: 0.5
+  ignore_index: -1
+  dice_classes: ${oc.select:dataset.dice_classes,[1]}   # foreground classes; default [1], flood overrides to [1,2]
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.CosineAnnealingLR
+  T_max: ${trainer.max_epochs}
+  # 1% of the peak LR, not an absolute value: the LR is a swept knob, and a fixed
+  # 1e-6 would be 1% of lr=1e-4 but 0.1% of lr=1e-3, i.e. a different schedule
+  # shape per sweep point. The run now always ends at the same relative floor.
+  eta_min: ${scale:${lit_module.optimizer.lr},0.01}
+
+# Linear LR warmup before the cosine kicks in. Attention-based models (U-TAE,
+# TSViT) are unstable in the first epochs at the full LR, so they set this in
+# their model config; the ConvLSTM/ConvGRU/UNet3D baselines default to 0 and
+# keep the plain cosine. The cosine's T_max is reduced by warmup_epochs inside
+# configure_optimizers, so the total schedule length stays trainer.max_epochs.
+warmup_epochs: ${oc.select:model.warmup_epochs,0}
+warmup_start_factor: ${oc.select:model.warmup_start_factor,0.01}
+
+optimizer:
+  _target_: torch.optim.AdamW
+  weight_decay: 1e-4
+  # Pro Dataset gesetzt, weil pro Dataset gesweept: IM-Fire steht auf 3e-4 aus
+  # dem val-Sweep in experiment90 (4 von 4 seed-gepaarten Vergleichen gegen 1e-4,
+  # im Mittel +0.98 pp val/mIoU). Fuer alles Ungesweepte bleibt es bei 1e-4.
+  lr: ${oc.select:dataset.lr,1e-4}
+
+monitor_metric: "val/mIoU"
+compile: false
+seed: ${seed}
+
+# Auxiliary supervision of the reliability head (gated fusion only). The head
+# predicts per-pixel, per-timestep usability of S2 and is trained against the
+# cloud mask that already ships in the ImpactMesh zarrs. Training signal only --
+# no mask is needed at inference. 0 disables the term, which is also what happens
+# automatically for stages without reliability heads and for datasets that carry
+# no cloud mask (Sen12Landslides); the gated experiment configs raise it.
+reliability_loss_weight: 0.0

@@ -1,0 +1,15 @@
+# @package _global_
+# UTAE on with differet temporal data 
+
+defaults:
+  - override /model: utae
+
+exp_nr: 2
+exp_tag: bi-temporal
+
+dataset:
+  temporal_mode: bi-temporal
+
+model:
+  instance:
+    fusion_stage: single

@@ -1,0 +1,24 @@
+# configs/callbacks/default.yaml
+- _target_: lightning.pytorch.callbacks.ModelCheckpoint
+  dirpath: ${hydra:runtime.output_dir}/checkpoints
+  filename: "best"
+  monitor: "val/mIoU"
+  save_top_k: 1
+  mode: "max"
+  save_last: false
+
+- _target_: lightning.pytorch.callbacks.ModelCheckpoint
+  dirpath: ${hydra:runtime.output_dir}/checkpoints
+  filename: "last"
+  monitor: null
+  save_top_k: 1
+  every_n_epochs: 1
+
+# Exponential moving average of the weights. The swap window (see the callback
+# docstring) covers validation AND checkpointing, so best.ckpt/last.ckpt hold the
+# EMA weights and `trainer.test(ckpt_path="best")` evaluates them.
+- _target_: fusion.pipeline.callbacks.EMA
+  decay: 0.999
+
+- _target_: lightning.pytorch.callbacks.LearningRateMonitor
+  logging_interval: epoch

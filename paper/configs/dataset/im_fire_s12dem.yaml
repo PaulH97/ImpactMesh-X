@@ -1,0 +1,21 @@
+# configs/dataset/impactmesh_fire_s12dem.yaml
+name: IM-Fire-S12DEM${variant_suffix:${dataset.s2_version}}
+root: path/to/ImpactMesh-X/Fire
+long_version: True
+task: wildfire
+img_size: 256
+num_classes: 2
+num_timesteps: 16
+temporal_mode: multi-temporal
+s2_version: clear # cloudy | realistic
+modality_infos:
+  S1RTC: {channels: 2, img_size: 256, temporal: true}
+  S2L2A: {channels: 12, img_size: 256, temporal: true}
+  DEM: {channels: 3, img_size: 256, temporal: false}
+split_json: ${dataset.root}/split/impactmesh_long_version_splits.json
+norm_json: ${dataset.root}/split/impactmesh_long_version_norm.json
+accum_steps: 2
+# LR-Sweep experiment90 (val/mIoU, U-TAE, S1+S2, seeds 42/123): 3e-4 > 1e-4, 1e-3 schlechter.
+lr: 3e-4
+# Val-Plateau liegt bei ~Epoche 18 (gemessen in experiment90, 50-ep-Schedule);
+max_epochs: 30

@@ -1,0 +1,16 @@
+# @package _global_
+# UNet3D benchmark — small datasets (128×128, Sen12Landslides)
+
+defaults:
+  - override /model: unet3d
+
+exp_nr: 1
+exp_tag: benchmark
+
+datamodule:
+  batch_size: 8
+  num_workers: 8
+  pin_memory: true
+
+trainer:
+  accumulate_grad_batches: 2   # effective bs = 16

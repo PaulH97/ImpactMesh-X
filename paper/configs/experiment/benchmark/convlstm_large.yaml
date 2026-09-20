@@ -1,0 +1,16 @@
+# @package _global_
+# ConvLSTM benchmark — large datasets (256×256, ImpactMesh-Fire/Flood)
+
+defaults:
+  - override /model: convlstm
+
+exp_nr: 1
+exp_tag: benchmark
+
+datamodule:
+  batch_size: 4
+  num_workers: 8
+  pin_memory: true
+
+trainer:
+  accumulate_grad_batches: 4   # effective bs = 16

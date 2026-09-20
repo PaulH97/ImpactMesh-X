@@ -1,0 +1,12 @@
+# @package _global_
+# UTAE on different fusion strategies 
+
+defaults:
+  - override /model: utae
+
+exp_nr: 3
+exp_tag: fusion_late
+
+model:
+  instance:
+    fusion_stage: late
