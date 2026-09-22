@@ -1,6 +1,6 @@
 """
 Original taken from: https://github.com/VSainteuf/utae-paps/blob/main/src/backbones/unet3d.py
-Modified by Paul Höhn, 05.05.2026
+Modified by Paul Höhn
 """
 
 import torch

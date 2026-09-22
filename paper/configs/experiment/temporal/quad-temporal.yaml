@@ -1,14 +1,14 @@
 # @package _global_
-# UTAE auf der ImpactMesh-Originalserie: pre_month, pre_event, event_window,
-# post_event. Das ist die Sprosse zwischen bi-temporal und der vollen Serie und
-# zugleich genau das Datenprodukt, auf dem das ImpactMesh-Paper trainiert --
-# damit beantwortet die Leiter 1/2/4/16, ob SITS ueberhaupt etwas beitraegt.
+# UTAE on the ImpactMesh original series: pre_month, pre_event, event_window,
+# post_event. This is the rung between bi-temporal and the full series, and at
+# the same time exactly the data product the ImpactMesh paper trains on --
+# so the ladder 1/2/4/16 answers whether SITS contributes anything at all.
 #
-# Auf ImpactMesh sind es die echten Originalaufnahmen (die vier Ankerdaten
-# stecken bei 99.8-100 % der Patches im 16er-Stack, S1 und S2-clear). Auf
-# Sen12Landslides gibt es keine Anker, dort waehlt select_timesteps nach
-# derselben Regel wie fuer single-post/bi-temporal, mit >= 30 Tagen Abstand fuer
-# die beiden aeusseren Frames.
+# On ImpactMesh these are the real original acquisitions (the four anchor dates
+# land in 99.8-100% of the patches in the 16-frame stack, S1 and S2-clear). On
+# Sen12Landslides there are no anchors; there select_timesteps picks by the
+# same rule as for single-post/bi-temporal, with >= 30 days of distance for
+# the two outer frames.
 
 defaults:
   - override /model: utae

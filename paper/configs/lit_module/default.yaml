@@ -29,9 +29,9 @@ warmup_start_factor: ${oc.select:model.warmup_start_factor,0.01}
 optimizer:
   _target_: torch.optim.AdamW
   weight_decay: 1e-4
-  # Pro Dataset gesetzt, weil pro Dataset gesweept: IM-Fire steht auf 3e-4 aus
-  # dem val-Sweep in experiment90 (4 von 4 seed-gepaarten Vergleichen gegen 1e-4,
-  # im Mittel +0.98 pp val/mIoU). Fuer alles Ungesweepte bleibt es bei 1e-4.
+  # Set per dataset because it is swept per dataset: IM-Fire sits at 3e-4 from
+  # the val sweep in experiment90 (4 of 4 seed-paired comparisons against 1e-4,
+  # +0.98 pp val/mIoU on average). Anything unswept stays at 1e-4.
   lr: ${oc.select:dataset.lr,1e-4}
 
 monitor_metric: "val/mIoU"

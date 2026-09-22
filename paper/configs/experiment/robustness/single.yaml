@@ -1,18 +1,18 @@
 # @package _global_
-# Experiment 4: Fusionsstufen unter atmosphaerischer Occlusion.
-# S2-only Referenzzeile (keine Fusion) -- zeigt den reinen
-# S2-Einbruch, gegen den die Fusionsstufen gehalten werden.
+# Experiment 4: fusion stages under atmospheric occlusion.
+# S2-only reference row (no fusion) -- shows the raw S2 degradation that the
+# fusion stages are compared against.
 #
-# Die S2-Variante (clear | cloudy | realistic) kommt als `dataset.s2_version`-
-# Override aus all_runs.csv, nicht aus einer eigenen Dataset-Config. `clear`
-# ist eine Spalte dieses Experiments -- die Clear-Referenz jeder Zeile wird also
-# im selben Sweep mit identischer Config und identischen Seeds gerechnet, nicht
-# aus exp2/exp3 geliehen.
+# The S2 variant (clear | cloudy | realistic) comes in as a `dataset.s2_version`
+# override from all_runs.csv, not from a dedicated dataset config. `clear` is a
+# column of this experiment -- so the clear reference of every row is computed
+# in the same sweep with an identical config and identical seeds, not borrowed
+# from exp2/exp3.
 #
-# Gleiches Modell und gleicher temporal_mode (multi-temporal aus der
-# Dataset-Config) wie die Fusionszeilen, kein accumulate_grad_batches-Override --
-# gleicher effektiver Batch (8 auf ImpactMesh), damit die Zeile direkt gegen die
-# Fusionsstufen lesbar ist.
+# Same model and same temporal_mode (multi-temporal from the dataset config)
+# as the fusion rows, no accumulate_grad_batches override -- same effective
+# batch (8 on ImpactMesh), so this row reads directly against the fusion
+# stages.
 
 defaults:
   - override /model: utae

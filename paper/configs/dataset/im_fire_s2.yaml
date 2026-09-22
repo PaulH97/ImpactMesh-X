@@ -13,7 +13,7 @@ modality_infos:
 split_json: ${dataset.root}/split/impactmesh_long_version_splits.json
 norm_json: ${dataset.root}/split/impactmesh_long_version_norm.json
 accum_steps: 2
-# LR-Sweep experiment90 (val/mIoU, U-TAE, S1+S2, seeds 42/123): 3e-4 > 1e-4, 1e-3 schlechter.
+# LR sweep experiment90 (val/mIoU, U-TAE, S1+S2, seeds 42/123): 3e-4 > 1e-4, 1e-3 worse.
 lr: 3e-4
-# Val-Plateau liegt bei ~Epoche 18 (gemessen in experiment90, 50-ep-Schedule);
+# Val plateau sits at ~epoch 18 (measured in experiment90, 50-epoch schedule);
 max_epochs: 30

@@ -12,17 +12,9 @@ modality_infos:
   S1RTC: {channels: 2, img_size: 256, temporal: true}
 split_json: ${dataset.root}/split/impactmesh_long_version_splits.json
 norm_json: ${dataset.root}/split/impactmesh_long_version_norm.json
-
 accum_steps: 2
-# LR-Sweep experiment92 (val/mIoU, U-TAE, S1+S2, seeds 42/123): 1e-3 > 3e-4 > 1e-4,
-# monoton. 3e-3 (experiment93) gewinnt auf val nur um 0.38 pp -- kleiner als die
-# Seed-Spanne -- und faellt im Test auf beiden Modalitaeten und beiden Seeds ab
-# (Flut-IoU -6.2 pp auf S1). Bei einem val-Gleichstand faellt die Wahl auf den
-# Wert, der auch fuer Sen12Landslides gilt.
+# LR sweep experiment92 (val/mIoU, U-TAE, S1+S2, seeds 42/123): 1e-3 > 3e-4 > 1e-4,
 lr: 1e-3
-# Epochenbudget aus experiment93: 15 / 30 / 50 sind auf val ununterscheidbar
-# (<0.35 pp, innerhalb der Seed-Spannen), das val-Optimum liegt bei Epoche 5-10.
-# 15 kostet ein Drittel von 50. Mit experiment94 auch fuer die Baselines geprueft:
-# TSViT und UNet3D sind zwischen 15 und 30 gleichauf, ConvLSTMs Optimum liegt bei
-# Epoche 10 -- und keines der drei divergiert bei 1e-3 ohne Warmup.
+# Epoch budget from experiment93: 15 / 30 / 50 are indistinguishable on val
+# (<0.35 pp, within the seed spread), the val optimum sits at epoch 5-10
 max_epochs: 15

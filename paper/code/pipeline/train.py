@@ -10,7 +10,7 @@ from hydra.core.hydra_config import HydraConfig
 from pathlib import Path
 import warnings
 
-import fusion.resolvers  # noqa: F401  -- registriert die OmegaConf-Resolver
+import fusion.resolvers  # noqa: F401  -- registers the OmegaConf resolvers
 
 warnings.filterwarnings("ignore", message="Grad strides do not match bucket view strides")
 warnings.filterwarnings("ignore", message="The epoch parameter in `scheduler.step\\(\\)` was not necessary")
@@ -58,30 +58,9 @@ def check_effective_batch(cfg) -> None:
         )
 
 
-def check_event_task(cfg):
-    """The temporal event head is only meaningful on the full series.
-
-    single-post and bi-temporal pick their frames BY the event date
-    (select_timesteps), so the event's position in the input is fixed by
-    construction and predicting it is circular. UTAE_MM already blocks the other
-    leak (temporal_pe='event'); this one lives in the data pipeline, so it has to
-    be caught here, where dataset and model config are both visible.
-    """
-    if not cfg.model.get("instance", {}).get("temporal_event_head", False):
-        return
-    mode = cfg.dataset.get("temporal_mode", "multi-temporal")
-    if mode != "multi-temporal":
-        raise ValueError(
-            f"temporal_event_head=True with dataset.temporal_mode={mode!r}: those "
-            "frames are selected using the event date, so the target is already "
-            "encoded in the input. Use multi-temporal."
-        )
-
-
 @hydra.main(config_path="../../configs", config_name="config", version_base=None)
 def main(cfg):
     check_effective_batch(cfg)
-    check_event_task(cfg)
     try:
         torch.set_float32_matmul_precision("high")
         seed_everything(cfg.seed, workers=True)

@@ -7,7 +7,7 @@ from typing import Optional
 import zarr
 import rasterio
 from fusion.data.utils import (
-    select_timesteps, plot_sample, print_metadata, clean_nodata, add_event_targets,
+    select_timesteps, plot_sample, print_metadata, clean_nodata,
     relative_days, day_of_year, days_between)
 
 
@@ -50,8 +50,8 @@ class ImpactMesh(Dataset):
     def _load_zarr(self, path: str):
         with zarr.storage.ZipStore(path, mode="r") as store:
             root = zarr.open_consolidated(store, mode="r")
-            # S2: xarray schreibt _FillValue=-9999 in die attrs; S1: kein Attr -> None,
-            # dort ist NaN das einzige Invalid-Signal.
+            # S2: xarray writes _FillValue=-9999 into the attrs; S1 has no such
+            # attr -> None, where NaN is the only invalid signal.
             fill = root["bands"].attrs.get("_FillValue", None)
             bands = clean_nodata(root["bands"][:], fill, self.no_data_replace)
             t_ns = root["time"][:]
@@ -114,17 +114,13 @@ class ImpactMesh(Dataset):
         if sample is None:
             return self[(idx + 1) % len(self)]
         # After the selection: zero is the first frame the model actually sees.
-        # The event day is put on that same axis -- it is a training target, not
-        # an input, and there is no global reference date anywhere any more.
         rel, ref = relative_days(sample["metadata"]["timestamps"])
         sample["metadata"]["rel_day"] = rel
         sample["metadata"]["doy"] = day_of_year(sample["metadata"]["timestamps"])
         ed = sample["metadata"]["event_date"]
         sample["metadata"]["event_day"] = (
             None if (ed is None or ref is None) else days_between(ref, ed))
-        sample = add_event_targets(sample)
         return self.transforms(sample) if self.transforms else sample
-
 
     def print_metadata(self, sample_or_idx):
         if isinstance(sample_or_idx, int):
@@ -295,22 +291,19 @@ class Sen12Landslides(Dataset):
         if sample is None:
             return self[(idx + 1) % len(self)]
         # After the selection: zero is the first frame the model actually sees.
-        # The event day is put on that same axis -- it is a training target, not
-        # an input, and there is no global reference date anywhere any more.
         rel, ref = relative_days(sample["metadata"]["timestamps"])
         sample["metadata"]["rel_day"] = rel
         sample["metadata"]["doy"] = day_of_year(sample["metadata"]["timestamps"])
         ed = sample["metadata"]["event_date"]
         sample["metadata"]["event_day"] = (
             None if (ed is None or ref is None) else days_between(ref, ed))
-        sample = add_event_targets(sample)
         return self.transforms(sample) if self.transforms else sample
 
     def print_metadata(self, sample_or_idx):
         if isinstance(sample_or_idx, int):
             sample = self[sample_or_idx]
         else:
-            sample = sample_or_idx    
+            sample = sample_or_idx
         print_metadata(sample, task=self.task)
 
     def plot(self, sample_or_idx, prediction=None, save_path=None):

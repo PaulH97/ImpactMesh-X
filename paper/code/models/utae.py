@@ -1,3 +1,8 @@
+"""
+Original taken from: https://github.com/VSainteuf/utae-paps/blob/main/src/backbones/utae.py
+Modified by Paul Höhn
+"""
+
 import math
 import torch
 import torch.nn as nn

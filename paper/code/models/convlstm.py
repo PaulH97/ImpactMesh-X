@@ -1,6 +1,6 @@
 """
 Original from https://github.com/TUM-LMF/MTLCC-pytorch/blob/master/src/models/convlstm/convlstm.py
-Modified by Paul Höhn, 05.05.2026
+Modified by Paul Höhn
 """
 import torch
 import torch.nn as nn

@@ -1,6 +1,6 @@
 """
 Original taken from: https://github.com/michaeltrs/DeepSatModels/blob/main/models/TSViT/TSViTdense.py
-Modified by Paul Höhn, 05.05.2026
+Modified by Paul Höhn
 """
 
 import torch

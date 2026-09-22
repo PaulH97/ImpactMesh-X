@@ -58,8 +58,8 @@ class ImpactMeshDataModule(LightningDataModule):
         """patch_id -> per-modality {pre_month, pre, post, post_month} acquisition
         dates that the ImpactMesh team anchored the annotation to.
         `select_timesteps` prefers these over its own cloud/date heuristic, so the
-        input frames match what the label is based on -- und quad-temporal ist damit
-        exakt die Originalserie und nicht nur eine Serie derselben Laenge.
+        input frames match what the label is based on -- so quad-temporal is
+        exactly the original series and not just a series of the same length.
         """
         hazard = "flood" if self.task == "flood" else "fire"
         meta_path = self.root / "data" / f"{hazard}_patch_meta_pos.parquet"

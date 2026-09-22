@@ -428,60 +428,6 @@ def select_timesteps(sample: dict, mode: str) -> dict:
     return sample
 
 
-def add_event_targets(sample: dict) -> dict:
-    """Attach the temporal event target: per modality, is frame t after the event?
-
-    Runs on the same relative axis as the model input: `rel_day` and
-    `event_day` are both counted from the sample's first frame, so the target
-    is a plain threshold and the error the metrics report stays in days.
-
-    The target is a STEP function `(T,)` in {0, 1}, not a one-hot on the first
-    post-event frame. Three reasons:
-
-    1. It stays defined when the event falls outside the loaded window (all-zero
-       or all-one), which one-hot does not -- and any windowing/jitter produces
-       exactly that case.
-    2. The loss is not carried by a single positive among 15-16 frames.
-    3. The quantity we actually report -- WHEN did it happen, in days -- is the
-       transition point of the step, which is well defined even if no single
-       frame is classified correctly.
-
-    `event_valid` is 0.0 for samples without an event date (Sen12Landslides has
-    them) or where the event lies outside the observed window on one side; the
-    loss and the metrics skip those instead of training on a degenerate target.
-
-    Nothing here is fed back into the input.
-    """
-    meta = sample["metadata"]
-    event_day = meta.get("event_day")
-    rel_by_mod = meta["rel_day"]
-
-    step, first_post, valid = {}, {}, {}
-    for mod, rel in rel_by_mod.items():
-        rel = rel.float()
-        if event_day is None:
-            step[mod] = torch.zeros_like(rel)
-            first_post[mod] = torch.tensor(-1, dtype=torch.long)
-            valid[mod] = torch.tensor(0.0)
-            continue
-        post = rel >= float(event_day)
-        step[mod] = post.float()
-        # -1 marks "no post-event frame in this window"; the metrics drop those
-        # rather than silently scoring the clamp.
-        idx = int(torch.nonzero(post)[0]) if bool(post.any()) else -1
-        first_post[mod] = torch.tensor(idx, dtype=torch.long)
-        # Both sides must be observed, otherwise the transition is not bracketed
-        # and "localisation error in days" has no finite ground truth.
-        valid[mod] = torch.tensor(float(bool(post.any()) and bool((~post).any())))
-
-    sample["event_step"] = step
-    sample["event_first_post"] = first_post
-    sample["event_valid"] = valid
-    sample["event_day"] = torch.tensor(
-        float("nan") if event_day is None else float(event_day))
-    return sample
-
-
 def metadata_collate(batch: list[dict]) -> dict:
     """Collate that pops `metadata` and lists it instead of stacking."""
     metadata = [b.pop("metadata") for b in batch]

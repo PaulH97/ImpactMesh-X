@@ -15,7 +15,7 @@ import inspect
 
 from fusion.data.utils import metadata_collate
 
-import fusion.resolvers  # noqa: F401  -- registriert die OmegaConf-Resolver
+import fusion.resolvers  # noqa: F401  -- registers the OmegaConf resolvers
 
 
 def instantiate_compatible(node, **kwargs):
@@ -77,13 +77,6 @@ def main():
 
     model_dir = Path(args.model_dir)
     cfg = OmegaConf.load(model_dir / ".hydra" / "config.yaml")
-
-    # Test-time shift: swap the S2 variant *after* loading the frozen config, so the
-    # model is exactly the one that was trained -- only the input distribution moves.
-    # `datamodule.dataset_cfg` is the interpolation ${dataset}, which resolves at
-    # instantiate time, so writing to cfg.dataset is enough. Normalization is shared
-    # across variants by design (NormalizeImpactMesh), i.e. no stats are re-fitted
-    # to the test variant.
     trained_version = cfg.dataset.get("s2_version", None)
     shift = args.test_s2_version is not None and args.test_s2_version != trained_version
     if args.test_s2_version is not None:
@@ -139,8 +132,6 @@ def main():
         datamodule.setup(stage="test")
 
         trainer = Trainer(accelerator=device, devices=1, logger=False)
-        # Eigener Suffix je S2-Variante, analog zu test_metrics<suffix>.json: der
-        # Shift-Lauf darf den Per-Sample-Dump der trainierten Bedingung nicht ueberschreiben.
         if hasattr(lit_module, "per_sample_path"):
             lit_module.per_sample_path = model_dir / f"test_per_sample{suffix}.csv"
         test_results = trainer.test(lit_module, datamodule=datamodule, verbose=False)
