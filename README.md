@@ -1,3 +1,5 @@
+> ⚠️ **Under Review:** This dataset and the corresponding paper are currently under peer review and subject to change.
+
 # ImpactMesh-X
 
 ImpactMesh-X extends the original ImpactMesh dataset along two axes: **time** and **robustness**. It benchmarks hazard mapping models on long-term multi-temporal context and atmospheric occlusion.
